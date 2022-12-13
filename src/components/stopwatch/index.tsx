@@ -25,7 +25,7 @@ export const Stopwatch = () => {
   const [stopWatchSummary, setStopWatchSummary] = useState<string[]>([]);
 
   const handleStartStopWatch = useCallback(() => {
-    if (stopWatchIntervalID) clearInterval(stopWatchIntervalID);
+    if (stopWatchIntervalID != null) clearInterval(stopWatchIntervalID);
 
     const intervalID = setInterval(() => {
       setStopWatchTime((state) => state + 10);
@@ -62,7 +62,7 @@ export const Stopwatch = () => {
   }, [firstStopwatchTime, stopwatchTime]);
 
   const handleStopStopWatch = useCallback(() => {
-    if (!stopWatchIntervalID) return;
+    if (stopWatchIntervalID == null) return;
 
     if (isFirstStopWatchTime) {
       setFirstStopWatchTime(stopwatchTime);
@@ -80,7 +80,7 @@ export const Stopwatch = () => {
   ]);
 
   const handleResetStopWatch = useCallback(() => {
-    if (!stopWatchIntervalID) return;
+    if (stopWatchIntervalID == null) return;
 
     setStopWatchTime(0);
     clearInterval(stopWatchIntervalID);
@@ -128,7 +128,7 @@ export const Stopwatch = () => {
 
         <StopWatchFlatList
           data={stopWatchSummary}
-          // @ts-ignore
+          // @ts-expect-error
           renderItem={({ item }: { item: string }) => (
             <StopWatchInfo>{item}</StopWatchInfo>
           )}
