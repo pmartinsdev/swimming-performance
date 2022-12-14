@@ -37,6 +37,20 @@ export const Stopwatch: FC<StopWatchProps> = ({ comparationTime }) => {
     setStopWatchIntervalID(intervalID);
   }, [stopWatchIntervalID]);
 
+  const getTimerText = useCallback((timeInSeconds: number) => {
+    const miliseconds = Math.floor(timeInSeconds / 1);
+    const seconds = Math.round(miliseconds / 100);
+    const minutes = Math.floor(seconds / 60);
+
+    return `${getNumberWithTwoDigits(minutes % 60)}:${getNumberWithTwoDigits(
+      seconds % 60
+    )}:${getNumberWithTwoDigits(miliseconds % 60)}`;
+  }, []);
+
+  const stopWatchTimer = useMemo(() => {
+    return getTimerText(stopwatchTime);
+  }, [stopwatchTime]);
+
   const handleInserPerformanceResume = useCallback(() => {
     const percent = getAverageFromTime({
       stopWatchTime: stopwatchTime,
@@ -45,9 +59,11 @@ export const Stopwatch: FC<StopWatchProps> = ({ comparationTime }) => {
 
     setStopWatchSummary((state) => [
       ...state,
-      `Você teve ${getNumberWithTwoDigits(percent)}% de performance.`,
+      `Você fez ${getNumberWithTwoDigits(percent)}% a ${
+        percent > 100 ? "mais" : "menos"
+      } no tempo de ${getTimerText(comparationTime)} com ${stopWatchTimer}`,
     ]);
-  }, [comparationTime, stopwatchTime]);
+  }, [comparationTime, stopwatchTime, stopWatchTimer]);
 
   const handleStopStopWatch = useCallback(() => {
     if (stopWatchIntervalID == null) return;
@@ -67,16 +83,6 @@ export const Stopwatch: FC<StopWatchProps> = ({ comparationTime }) => {
     setStopWatchTime(0);
     clearInterval(stopWatchIntervalID);
   }, [stopWatchIntervalID]);
-
-  const stopWatchTimer = useMemo(() => {
-    const miliseconds = Math.floor(stopwatchTime / 1);
-    const seconds = Math.round(miliseconds / 100);
-    const minutes = Math.floor(seconds / 60);
-
-    return `${getNumberWithTwoDigits(minutes % 60)}:${getNumberWithTwoDigits(
-      seconds % 60
-    )}:${getNumberWithTwoDigits(miliseconds % 60)}`;
-  }, [stopwatchTime]);
 
   return (
     <>
