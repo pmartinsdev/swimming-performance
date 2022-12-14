@@ -1,0 +1,25 @@
+export interface GetAverageFromTimeParams {
+  time: number;
+  stopWatchTime: number;
+}
+
+export function getAverageFromTime({
+  time,
+  stopWatchTime,
+}: GetAverageFromTimeParams): number {
+  const isStopWatchTimeMoreThanTime = stopWatchTime > time;
+
+  const percent = Math.floor(
+    (Math.max(stopWatchTime, time) / Math.min(time, stopWatchTime)) * 100
+  );
+
+  console.log(percent);
+
+  if (isStopWatchTimeMoreThanTime) {
+    const percertDifferenceFromHundred = percent - 100;
+
+    return 100 - percertDifferenceFromHundred;
+  } else {
+    return percent;
+  }
+}

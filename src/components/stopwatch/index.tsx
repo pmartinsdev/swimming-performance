@@ -1,5 +1,6 @@
 import { milliseconds } from "date-fns";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { getAverageFromTime } from "../../utils/get-average-from-time";
 import { getNumberWithTwoDigits } from "../../utils/getNumberWithTwoDigits";
 
 import {
@@ -37,28 +38,15 @@ export const Stopwatch = () => {
   const handleInserPerformanceResume = useCallback(() => {
     if (!firstStopwatchTime) return;
 
-    const isPerformanceLessThanOriginalTime =
-      stopwatchTime < firstStopwatchTime;
+    const percent = getAverageFromTime({
+      stopWatchTime: stopwatchTime,
+      time: firstStopwatchTime,
+    });
 
-    const percent = Math.floor(
-      (Math.max(stopwatchTime, firstStopwatchTime) /
-        Math.min(firstStopwatchTime, stopwatchTime)) *
-        100
-    );
-
-    if (isPerformanceLessThanOriginalTime && percent === Infinity) {
-      setStopWatchSummary((state) => [
-        ...state,
-        `Você teve -${100}% de performance.`,
-      ]);
-    } else {
-      setStopWatchSummary((state) => [
-        ...state,
-        `Você teve ${
-          isPerformanceLessThanOriginalTime ? "+" : "-"
-        }${getNumberWithTwoDigits(percent)}% de performance.`,
-      ]);
-    }
+    setStopWatchSummary((state) => [
+      ...state,
+      `Você teve ${getNumberWithTwoDigits(percent)}% de performance.`,
+    ]);
   }, [firstStopwatchTime, stopwatchTime]);
 
   const handleStopStopWatch = useCallback(() => {
