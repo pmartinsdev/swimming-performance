@@ -1,7 +1,11 @@
 import { milliseconds } from "date-fns";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { getAverageFromTime } from "../../utils/get-average-from-time";
 import { getNumberWithTwoDigits } from "../../utils/getNumberWithTwoDigits";
+
+export interface StopWatchProps {
+  comparationTime: number;
+}
 
 import {
   StopWatch,
@@ -17,10 +21,8 @@ import {
   StopWatchFlatList,
 } from "./styles";
 
-export const Stopwatch = () => {
+export const Stopwatch: FC<StopWatchProps> = ({ comparationTime }) => {
   const [stopwatchTime, setStopWatchTime] = useState(0);
-  const [isFirstStopWatchTime, setIsFirstStopWatchTime] = useState(true);
-  const [firstStopwatchTime, setFirstStopWatchTime] = useState(0);
   const [stopWatchIntervalID, setStopWatchIntervalID] =
     useState<NodeJS.Timer>();
   const [stopWatchSummary, setStopWatchSummary] = useState<string[]>([]);
@@ -36,35 +38,27 @@ export const Stopwatch = () => {
   }, [stopWatchIntervalID]);
 
   const handleInserPerformanceResume = useCallback(() => {
-    if (!firstStopwatchTime) return;
-
     const percent = getAverageFromTime({
       stopWatchTime: stopwatchTime,
-      time: firstStopwatchTime,
+      time: comparationTime,
     });
 
     setStopWatchSummary((state) => [
       ...state,
       `Você teve ${getNumberWithTwoDigits(percent)}% de performance.`,
     ]);
-  }, [firstStopwatchTime, stopwatchTime]);
+  }, [comparationTime, stopwatchTime]);
 
   const handleStopStopWatch = useCallback(() => {
     if (stopWatchIntervalID == null) return;
-
-    if (isFirstStopWatchTime) {
-      setFirstStopWatchTime(stopwatchTime);
-    }
-
-    setIsFirstStopWatchTime(false);
 
     clearInterval(stopWatchIntervalID);
     handleInserPerformanceResume();
   }, [
     stopWatchIntervalID,
-    isFirstStopWatchTime,
     stopwatchTime,
     handleInserPerformanceResume,
+    comparationTime,
   ]);
 
   const handleResetStopWatch = useCallback(() => {

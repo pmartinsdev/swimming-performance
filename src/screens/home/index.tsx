@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Input } from "../../components/input";
 import { Stopwatch } from "../../components/stopwatch";
 
@@ -6,6 +6,14 @@ import { HomeScreenContainer, HomeHeader, HeaderText } from "./styles";
 
 export const HomeScreen = () => {
   const [time, setTime] = useState("");
+
+  const timeInSeconds = useMemo(() => {
+    if (!time) return 0;
+
+    const [minutes, seconds] = time.split(":");
+
+    return Number(seconds) + Number(minutes) * 60;
+  }, [time]);
 
   return (
     <HomeScreenContainer>
@@ -22,10 +30,10 @@ export const HomeScreen = () => {
         onChangeText={(value) => {
           setTime(value);
         }}
-        mask={"[00]:[00]:[00]"}
+        mask={"[00]:[00]"}
       />
 
-      <Stopwatch />
+      <Stopwatch comparationTime={timeInSeconds} />
     </HomeScreenContainer>
   );
 };
