@@ -1,11 +1,7 @@
-import { milliseconds } from "date-fns";
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
+
 import { getAverageFromTime } from "../../utils/get-average-from-time";
 import { getNumberWithTwoDigits } from "../../utils/getNumberWithTwoDigits";
-
-export interface StopWatchProps {
-  comparationTime: number;
-}
 
 import {
   StopWatch,
@@ -20,6 +16,10 @@ import {
   Divider,
   StopWatchFlatList,
 } from "./styles";
+
+export interface StopWatchProps {
+  comparationTime: number;
+}
 
 export const Stopwatch: FC<StopWatchProps> = ({ comparationTime }) => {
   const [stopwatchTime, setStopWatchTime] = useState(0);
@@ -57,11 +57,18 @@ export const Stopwatch: FC<StopWatchProps> = ({ comparationTime }) => {
       time: comparationTime,
     });
 
+    const { seconds, minutes } = {
+      minutes: Math.floor(comparationTime % 60),
+      seconds: Math.floor(comparationTime / 60),
+    };
+
     setStopWatchSummary((state) => [
       ...state,
       `Você fez ${getNumberWithTwoDigits(percent)}% a ${
         percent > 100 ? "mais" : "menos"
-      } no tempo de ${getTimerText(comparationTime)} com ${stopWatchTimer}`,
+      } no tempo de ${getNumberWithTwoDigits(minutes)}:${getNumberWithTwoDigits(
+        seconds
+      )}:00 com ${stopWatchTimer}`,
     ]);
   }, [comparationTime, stopwatchTime, stopWatchTimer]);
 

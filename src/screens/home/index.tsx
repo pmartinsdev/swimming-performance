@@ -1,14 +1,14 @@
-import { useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { Input } from "../../components/input";
 import { Stopwatch } from "../../components/stopwatch";
 
 import { HomeScreenContainer, HomeHeader, HeaderText } from "./styles";
 
-export const HomeScreen = () => {
+export const HomeScreen: FC = () => {
   const [time, setTime] = useState("");
 
   const timeInSeconds = useMemo(() => {
-    if (!time) return 0;
+    if (time.length === 0) return 0;
 
     const [minutes, seconds] = time.split(":");
 
@@ -23,14 +23,14 @@ export const HomeScreen = () => {
 
       <Input
         name="time"
+        mask="99:99"
+        value={time}
         keyboardType="numeric"
         placeholderTextColor="#a8a8a8"
         placeholder="Coloque aqui o tempo de comparaçao"
-        value={time}
         onChangeText={(value) => {
           setTime(value);
         }}
-        mask={"[00]:[00]"}
       />
 
       <Stopwatch comparationTime={timeInSeconds} />

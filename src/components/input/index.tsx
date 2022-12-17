@@ -1,12 +1,12 @@
 import { FC } from "react";
-import { TextInputMaskProps } from "react-native-text-input-mask";
+import { MaskedTextInputProps, MaskedTextInput } from "react-native-mask-text";
 
 import { InputContainer } from "./styles";
 
-export interface InputProps extends TextInputMaskProps {
+export interface InputProps extends MaskedTextInputProps {
   name: string;
 }
 
 export const Input: FC<InputProps> = ({ name: _name, ...props }) => {
-  return <InputContainer {...props} />;
+  return <MaskedTextInput {...props} style={InputContainer} />;
 };

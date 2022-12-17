@@ -11,15 +11,15 @@
   "dependencies": {
     "date-fns": "^2.29.3",
     "expo": "~47.0.8",
+    "expo-splash-screen": "~0.17.5",
     "expo-status-bar": "~1.4.2",
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-native": "0.70.5",
+    "react-native-mask-text": "^0.13.1",
     "react-native-stopwatch-timer": "^0.0.21",
-    "react-native-text-input-mask": "^3.1.4",
     "react-native-web": "~0.18.9",
-    "styled-components": "^5.3.6",
-    "expo-splash-screen": "~0.17.5"
+    "styled-components": "^5.3.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
