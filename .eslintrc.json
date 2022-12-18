@@ -22,7 +22,8 @@
   },
   "plugins": ["react", "eslint-plugin-prettier"],
   "rules": {
+    "react/display-name": "off",
     "react/react-in-jsx-scope": "off",
-    "react/display-name": "off"
+    "@typescript-eslint/restrict-template-expressions": "off"
   }
 }

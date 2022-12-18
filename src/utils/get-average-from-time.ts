@@ -1,11 +1,11 @@
 export interface GetAverageFromTimeParams {
   time: number;
-  stopWatchTime: number;
+  stopWatchTimeInSeconds: number;
 }
 
 export function getAverageFromTime({
   time,
-  stopWatchTime,
+  stopWatchTimeInSeconds: stopWatchTime,
 }: GetAverageFromTimeParams): number {
   const isStopWatchTimeMoreThanTime = stopWatchTime > time;
 

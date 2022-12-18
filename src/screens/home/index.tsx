@@ -1,6 +1,7 @@
 import { FC, useMemo, useState } from "react";
-import { Input } from "../../components/input";
-import { Stopwatch } from "../../components/stopwatch";
+
+import { Input } from "@components/input";
+import { Stopwatch } from "@components/stopwatch";
 
 import { HomeScreenContainer, HomeHeader, HeaderText } from "./styles";
 

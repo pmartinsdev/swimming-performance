@@ -1,4 +1,4 @@
-export const InputContainer = {
+export const InputContainerStyle = {
   padding: 8,
   fontSize: 20,
   width: "100%",

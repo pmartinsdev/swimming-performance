@@ -1,7 +1,7 @@
-import { FC, useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
-import { getAverageFromTime } from "../../utils/get-average-from-time";
-import { getNumberWithTwoDigits } from "../../utils/getNumberWithTwoDigits";
+import { getAverageFromTime } from "@utils/get-average-from-time";
+import { getNumberWithTwoDigits } from "@utils/getNumberWithTwoDigits";
 
 import {
   StopWatch,
@@ -22,7 +22,8 @@ export interface StopWatchProps {
 }
 
 export const Stopwatch: FC<StopWatchProps> = ({ comparationTime }) => {
-  const [stopwatchTime, setStopWatchTime] = useState(0);
+  const [stopwatchTimeInMiliseconds, setStopWatchTimeinMiliseconds] =
+    useState(0);
   const [stopWatchIntervalID, setStopWatchIntervalID] =
     useState<NodeJS.Timer>();
   const [stopWatchSummary, setStopWatchSummary] = useState<string[]>([]);
@@ -31,35 +32,36 @@ export const Stopwatch: FC<StopWatchProps> = ({ comparationTime }) => {
     if (stopWatchIntervalID != null) clearInterval(stopWatchIntervalID);
 
     const intervalID = setInterval(() => {
-      setStopWatchTime((state) => state + 10);
+      setStopWatchTimeinMiliseconds((state) => state + 10);
     }, 100);
 
     setStopWatchIntervalID(intervalID);
   }, [stopWatchIntervalID]);
 
-  const getTimerText = useCallback((timeInSeconds: number) => {
-    const miliseconds = Math.floor(timeInSeconds / 1);
-    const seconds = Math.round(miliseconds / 100);
+  const getTimerText = useCallback((timeInMiliseconds: number): string => {
+    const seconds = Math.floor(timeInMiliseconds / 100);
     const minutes = Math.floor(seconds / 60);
 
     return `${getNumberWithTwoDigits(minutes % 60)}:${getNumberWithTwoDigits(
       seconds % 60
-    )}:${getNumberWithTwoDigits(miliseconds % 60)}`;
+    )}:${getNumberWithTwoDigits(timeInMiliseconds % 100)}`;
   }, []);
 
   const stopWatchTimer = useMemo(() => {
-    return getTimerText(stopwatchTime);
-  }, [stopwatchTime]);
+    return getTimerText(stopwatchTimeInMiliseconds);
+  }, [stopwatchTimeInMiliseconds]);
 
   const handleInserPerformanceResume = useCallback(() => {
+    const stopwatchSeconds = Math.round(stopwatchTimeInMiliseconds / 100);
+
     const percent = getAverageFromTime({
-      stopWatchTime: stopwatchTime,
+      stopWatchTimeInSeconds: stopwatchSeconds,
       time: comparationTime,
     });
 
     const { seconds, minutes } = {
-      minutes: Math.floor(comparationTime % 60),
-      seconds: Math.floor(comparationTime / 60),
+      minutes: Math.floor(comparationTime / 60),
+      seconds: Math.floor(comparationTime % 60),
     };
 
     setStopWatchSummary((state) => [
@@ -70,7 +72,7 @@ export const Stopwatch: FC<StopWatchProps> = ({ comparationTime }) => {
         seconds
       )}:00 com ${stopWatchTimer}`,
     ]);
-  }, [comparationTime, stopwatchTime, stopWatchTimer]);
+  }, [comparationTime, stopwatchTimeInMiliseconds, stopWatchTimer]);
 
   const handleStopStopWatch = useCallback(() => {
     if (stopWatchIntervalID == null) return;
@@ -79,21 +81,24 @@ export const Stopwatch: FC<StopWatchProps> = ({ comparationTime }) => {
     handleInserPerformanceResume();
   }, [
     stopWatchIntervalID,
-    stopwatchTime,
+    stopwatchTimeInMiliseconds,
     handleInserPerformanceResume,
     comparationTime,
   ]);
 
   const handleResetStopWatch = useCallback(() => {
-    if (stopWatchIntervalID == null) return;
+    setStopWatchTimeinMiliseconds(0);
 
-    setStopWatchTime(0);
-    clearInterval(stopWatchIntervalID);
+    if (stopWatchIntervalID) clearInterval(stopWatchIntervalID);
+  }, [stopWatchIntervalID]);
+
+  useEffect(() => {
+    return () => clearInterval(stopWatchIntervalID);
   }, [stopWatchIntervalID]);
 
   return (
     <>
-      <StopWatch>
+      <StopWatch testID="stopwatch">
         <StopWatchText>{stopWatchTimer}</StopWatchText>
 
         <StopWatchFooter>
@@ -101,15 +106,24 @@ export const Stopwatch: FC<StopWatchProps> = ({ comparationTime }) => {
             activeOpacity={0.6}
             noMargin
             onPress={handleResetStopWatch}
+            testID="stopwatch-reset"
           >
             <StopWatchButtonText>Zerar</StopWatchButtonText>
           </StopWatchButton>
 
-          <StopWatchButton activeOpacity={0.6} onPress={handleStopStopWatch}>
+          <StopWatchButton
+            activeOpacity={0.6}
+            onPress={handleStopStopWatch}
+            testID="stopwatch-stop"
+          >
             <StopWatchButtonText>Parar</StopWatchButtonText>
           </StopWatchButton>
 
-          <StopWatchButton activeOpacity={0.6} onPress={handleStartStopWatch}>
+          <StopWatchButton
+            activeOpacity={0.6}
+            onPress={handleStartStopWatch}
+            testID="stopwatch-start"
+          >
             <StopWatchButtonText>Iniciar</StopWatchButtonText>
           </StopWatchButton>
         </StopWatchFooter>
@@ -123,9 +137,8 @@ export const Stopwatch: FC<StopWatchProps> = ({ comparationTime }) => {
 
         <StopWatchFlatList
           data={stopWatchSummary}
-          // @ts-expect-error
           renderItem={({ item }: { item: string }) => (
-            <StopWatchInfo>{item}</StopWatchInfo>
+            <StopWatchInfo testID="stopwatch-summary">{item}</StopWatchInfo>
           )}
           showsVerticalScrollIndicator={true}
         />
