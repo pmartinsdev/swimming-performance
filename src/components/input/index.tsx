@@ -8,5 +8,7 @@ export interface InputProps extends MaskedTextInputProps {
 }
 
 export const Input: FC<InputProps> = ({ name: _name, ...props }) => {
-  return <MaskedTextInput {...props} style={InputContainerStyle} />;
+  return (
+    <MaskedTextInput {...props} style={InputContainerStyle} testID="input" />
+  );
 };
