@@ -13,6 +13,7 @@ export default {
   coverageDirectory: "coverage",
   coverageReporters: ["text-summary", "lcov"],
   collectCoverageFrom: ["<rootDir>/src/**/*.ts*"],
+  coveragePathIgnorePatterns: ["<rootDir>/src/test"],
   setupFilesAfterEnv: ["<rootDir>/src/test/setup.ts"],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: "<rootDir>/src/",
